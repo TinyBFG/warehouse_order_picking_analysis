@@ -1,0 +1,34 @@
+# Immutable downloaded source data
+/data/raw/
+
+# Generated databases and intermediate datasets
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+/data/interim/
+/data/processed/
+
+# Python caches and local environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+env/
+
+# Temporary files
+*.tmp
+*.temp
+~$*
+
+# Local secrets; allow a sanitized configuration example
+.env
+.env.*
+!.env.example
+/secrets/
+
+# Generated outputs are excluded individually when introduced.
+# Keep selected portfolio artifacts eligible for version control.
