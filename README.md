@@ -22,7 +22,7 @@ Storage-scenario comparisons are a possible extension, pending clarification of 
 
 ## Current status
 
-The initial read-only feasibility audit is complete. Repository foundation work is underway. No project ingestion pipeline, SQLite database, analytical SQL, KPI workbook, or dashboard has been implemented yet.
+The initial read-only feasibility audit, CSV inventory script, and initial SQLite schema are complete. A product-loading function registers source metadata and loads product records into an initialized SQLite connection. It has been checked against the 208-row local product file using an in-memory database. A full database-build command, the remaining data loaders, analytical SQL, KPI workbook, and dashboard are not implemented yet.
 
 The counts below were checked directly against the local source files. They are raw-source observations, not validated business KPIs. Repeated records are retained.
 
@@ -79,6 +79,6 @@ These are planned deliverables, not claims of completed artifacts. Important ana
 
 ## Reproduction and development
 
-There is no build or analysis command yet. Dependency setup, source acquisition instructions, schema definitions, and execution commands will be documented when implemented and verified. The supplied notebook has not been executed as part of this project.
+See [development setup](docs/development_setup.md) for the Python environment, inventory command, and test instructions. The initial schema is in `sql/schema.sql`; `scripts/load_products.py` provides `load_products(connection, source_path)` for a connection initialized with that schema and with no active transaction. It reads the source without changing it, trims derived product fields, and loads products and file metadata in one transaction. Repeat loads fail rather than replace data. There is no command-line database builder or analytical pipeline yet. Source acquisition details remain unresolved; see [source provenance](docs/source_provenance.md). The supplied notebook has not been executed as part of this project.
 
 Work proceeds in small, reviewed tasks. Each implementation receives an explanation, relevant verification, and a proposed Git checkpoint. Original data remains immutable, and source rows are preserved until explicit, tested transformation rules are approved.
