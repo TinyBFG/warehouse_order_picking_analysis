@@ -69,6 +69,26 @@ CREATE TABLE order_records (
     UNIQUE (source_file_id, source_record_number)
 ) STRICT;
 
+-- One original picking-assignment record, not a confirmed completed pick.
+-- Preserve repeated assignments; wave/product/size/location is not a unique key.
+CREATE TABLE picking_records (
+    picking_record_id INTEGER PRIMARY KEY,
+    wave_number TEXT NOT NULL
+        CHECK (length(wave_number) > 0 AND wave_number = trim(wave_number)),
+    reference TEXT NOT NULL REFERENCES products (reference),
+    size_raw TEXT NOT NULL CHECK (length(trim(size_raw)) > 0),
+    quantity INTEGER NOT NULL CHECK (quantity >= 0),
+    -- No location foreign key: the supplied master is incomplete.
+    -- Retain unmatched codes for later coverage checks; never invent master rows.
+    location_code TEXT NOT NULL
+        CHECK (length(location_code) > 0 AND location_code = trim(location_code)),
+    operator_label TEXT NOT NULL
+        CHECK (length(operator_label) > 0 AND operator_label = trim(operator_label)),
+    source_file_id INTEGER NOT NULL REFERENCES source_files (source_file_id),
+    source_record_number INTEGER NOT NULL CHECK (source_record_number >= 1),
+    UNIQUE (source_file_id, source_record_number)
+) STRICT;
+
 -- Source counts, hash/file correspondence, and record-number bounds are loader checks.
 -- No source data is inserted by this schema.
 COMMIT;
