@@ -22,7 +22,7 @@ Storage-scenario comparisons are a possible extension, pending clarification of 
 
 ## Current status
 
-The initial read-only feasibility audit, CSV inventory script, and initial SQLite schema are complete. A product-loading function registers source metadata and loads product records into an initialized SQLite connection. It has been checked against the 208-row local product file using an in-memory database. A full database-build command, the remaining data loaders, analytical SQL, KPI workbook, and dashboard are not implemented yet.
+The initial audit, CSV inventory, SQLite schema, four data loaders, relationship checks, and database-build command are implemented and tested. The build loads products, locations, customer orders, and picking assignments, preserving source records and recording file metadata. Analytical SQL, the KPI workbook, and the dashboard remain to be developed. Size normalization has been investigated but is not applied by the loaders.
 
 The counts below were checked directly against the local source files. They are raw-source observations, not validated business KPIs. Repeated records are retained.
 
@@ -75,10 +75,22 @@ Any eventual recommendations will distinguish observations from hypotheses and i
 | Tableau Public | Interactive dashboard based on validated exports |
 | Git and GitHub | Version control, documentation, and portfolio publication |
 
-These are planned deliverables, not claims of completed artifacts. Important analytical SQL will be written or meaningfully revised by the project author.
+Database loading and relationship checks are implemented; analytical and publishing deliverables remain planned. Important analytical SQL will be written or meaningfully revised by the project author.
 
 ## Reproduction and development
 
-See [development setup](docs/development_setup.md) for the Python environment, inventory command, and test instructions. The initial schema is in `sql/schema.sql`; `scripts/load_products.py` provides `load_products(connection, source_path)` for a connection initialized with that schema and with no active transaction. It reads the source without changing it, trims derived product fields, and loads products and file metadata in one transaction. Repeat loads fail rather than replace data. There is no command-line database builder or analytical pipeline yet. Source acquisition details remain unresolved; see [source provenance](docs/source_provenance.md). The supplied notebook has not been executed as part of this project.
+See [development setup](docs/development_setup.md) for environment installation, the full test suite, and command details. From the project root, build the database with:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m scripts.build_database
+```
+
+This creates the ignored `data/warehouse.sqlite` and prints a JSON report with source checksums, record counts, integrity results, and relationship warnings. Existing files are refused unless you explicitly rebuild with:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m scripts.build_database --replace
+```
+
+Rebuilding creates a fresh database separately; it does not append records. The destination is replaced only after loading and validation succeed. Close database viewers before replacement. Known warnings about unmatched locations and order-only waves remain in the report; relationship errors stop the build. Source acquisition details remain unresolved; see [source provenance](docs/source_provenance.md). The supplied notebook has not been executed as part of this project.
 
 Work proceeds in small, reviewed tasks. Each implementation receives an explanation, relevant verification, and a proposed Git checkpoint. Original data remains immutable, and source rows are preserved until explicit, tested transformation rules are approved.
