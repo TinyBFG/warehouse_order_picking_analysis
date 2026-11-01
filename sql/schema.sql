@@ -30,6 +30,20 @@ CREATE TABLE products (
     UNIQUE (source_file_id, source_record_number)
 ) STRICT;
 
+-- One named location; different codes may legitimately share coordinates.
+-- position_raw retains the original coordinate string from the source.
+CREATE TABLE locations (
+    location_code TEXT NOT NULL PRIMARY KEY
+        CHECK (length(location_code) > 0 AND location_code = trim(location_code)),
+    position_raw TEXT NOT NULL CHECK (length(trim(position_raw)) > 0),
+    x INTEGER NOT NULL,
+    y INTEGER NOT NULL,
+    z INTEGER NOT NULL,
+    source_file_id INTEGER NOT NULL REFERENCES source_files (source_file_id),
+    source_record_number INTEGER NOT NULL CHECK (source_record_number >= 1),
+    UNIQUE (source_file_id, source_record_number)
+) STRICT;
+
 -- Source counts, hash/file correspondence, and record-number bounds are loader checks.
 -- No source data is inserted by this schema.
 COMMIT;
