@@ -44,6 +44,31 @@ CREATE TABLE locations (
     UNIQUE (source_file_id, source_record_number)
 ) STRICT;
 
+-- One original order-detail record. Repeated business attributes are preserved.
+-- Orders may span waves/operators; neither is forced into a single order header.
+CREATE TABLE order_records (
+    order_record_id INTEGER PRIMARY KEY,
+    customer_code TEXT NOT NULL
+        CHECK (length(customer_code) > 0 AND customer_code = trim(customer_code)),
+    order_number TEXT NOT NULL
+        CHECK (length(order_number) > 0 AND order_number = trim(order_number)),
+    order_to_collect INTEGER NOT NULL CHECK (order_to_collect >= 1),
+    reference TEXT NOT NULL REFERENCES products (reference),
+    -- Preserve source size text, including empty strings; no size mapping applied.
+    size_raw TEXT NOT NULL,
+    quantity INTEGER NOT NULL CHECK (quantity >= 0),
+    -- Order creation time: YYYY-MM-DD HH:MM, timezone unspecified by source.
+    -- Calendar validity is checked by the loader, not by this length constraint.
+    created_at TEXT NOT NULL CHECK (length(created_at) = 16),
+    wave_number TEXT NOT NULL
+        CHECK (length(wave_number) > 0 AND wave_number = trim(wave_number)),
+    operator_label TEXT NOT NULL
+        CHECK (length(operator_label) > 0 AND operator_label = trim(operator_label)),
+    source_file_id INTEGER NOT NULL REFERENCES source_files (source_file_id),
+    source_record_number INTEGER NOT NULL CHECK (source_record_number >= 1),
+    UNIQUE (source_file_id, source_record_number)
+) STRICT;
+
 -- Source counts, hash/file correspondence, and record-number bounds are loader checks.
 -- No source data is inserted by this schema.
 COMMIT;
