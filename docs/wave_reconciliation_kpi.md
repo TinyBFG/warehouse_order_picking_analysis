@@ -1,6 +1,6 @@
 # Wave quantity reconciliation KPI
 
-Defined: November 1, 2026. Contract version: 1. Status: proposed for owner review before analytical SQL implementation. No analytical query, dashboard metric, or operational target is implemented by this document.
+Defined: November 1, 2026. Contract version: 1. Implemented and verified: November 2, 2026, in [wave_reconciliation.sql](../sql/wave_reconciliation.sql), developed through the project author's SQL attempts and guided review. The query implements this definition; no dashboard metric or operational target has been established.
 
 ## Business question and intended use
 
@@ -130,4 +130,4 @@ Equal aggregate quantities do not prove equal product or size composition: diffe
 
 A higher aggregate agreement rate alone does not establish better warehouse performance. Do not set an operational target or recommend staffing/storage changes from this metric alone.
 
-After owner review, the next separate task is for the project author to attempt the analytical SQL. The query must then be reviewed and validated against this contract. This document does not approve automatic continuation to that task.
+The project author developed the implemented SQL through the Task 16 exercises. The saved query is checked by `tests/test_wave_reconciliation.py` using small independent cases, including empty inputs, zero totals, repeated records, unequal record counts, one-sided waves, and wave-weighted results. Its current-source results were checked independently against the CSVs. Further analytical tasks require separate owner review and approval.

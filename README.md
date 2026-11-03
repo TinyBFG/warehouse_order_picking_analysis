@@ -22,7 +22,7 @@ Storage-scenario comparisons are a possible extension, pending clarification of 
 
 ## Current status
 
-The initial audit, CSV inventory, SQLite schema, four data loaders, relationship checks, and database-build command are implemented and tested. The build loads products, locations, customer orders, and picking assignments, preserving source records and recording file metadata. Analytical SQL, the KPI workbook, and the dashboard remain to be developed. Size normalization has been investigated but is not applied by the loaders.
+The initial audit, CSV inventory, SQLite schema, four data loaders, relationship checks, and database-build command are implemented and tested. The build loads products, locations, customer orders, and picking assignments, preserving source records and recording file metadata. The first analyst-authored query, [wave reconciliation](sql/wave_reconciliation.sql), compares aggregate order and picking quantities and reports one-sided wave coverage. Additional analytical queries, the KPI workbook, and the dashboard remain to be developed. Size normalization has been investigated but is not applied by the loaders.
 
 The counts below were checked directly against the local source files. They are raw-source observations, not validated business KPIs. Repeated records are retained.
 
